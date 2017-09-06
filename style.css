@@ -1,0 +1,30 @@
+body
+{
+    padding: 50px 60px;
+    background-size: cover;
+    background-color: #FFF;
+}
+
+h1 {
+    text-align: center;
+    text-transform: capitalize;
+    color: dimgrey;
+    font-family: serif;
+    font-size: 30px;
+}
+
+p{
+    text-align: center;
+    color: grey;
+    font-size: 20px;
+}
+
+.stuff{
+   text-align: center; 
+}
+.namn{
+    width: 200px;
+    height: 100px;
+    border: 1px ;
+    max-height: 100px;
+}
