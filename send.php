@@ -7,28 +7,46 @@
     
     <body>
     	<?php
-			$namn = $_POST['projektnamn'];
-			
-			echo $namn;
-			
-			$host = "localhost"; // Den server som kör MySQL
-			$user = "root"; // Användarnamn till MySQL
-			$pass = ""; // Lösenord till MySQL
-			$databas = "oskar"; // Databasens namn
-			
-			$conn = mysqli_connect($host, $user, $pass, $databas);
-			if(! $conn)
-			{
-				echo "Anslutningen misslyckades.";
-				exit; 
-			}
-			
-			$sql = "insert into förslag (namn) values ('$namn');";
-			mysqli_query($conn, $sql);
-			mysqli_close($conn);
-			
-			//header('Location: index.php');
-		?>
+if(isset($_POST['btn']))
+{
+
+
+	// vi skapar $filtered för att spara efter varje filter
+	$filtered = filter_input(INPUT_POST, "projektnamn", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+	$filtered = trim($filtered);
+
+	// databas
+	$mysqli = new mysqli("localhost", "root", "", "oskar");
+	/* check connection */
+	if ($mysqli->connect_error) {
+	    die('Connect Error (' . $mysqli->connect_errno . ') '
+	            . $mysqli->connect_error);
+	}
+
+	/* change character set to utf8 */
+	if (!$mysqli->set_charset("utf8")) {
+	    echo "Error loading character set utf8: " . $mysqli->error;
+	    exit();
+	}
+
+	// spara i databas med prep statements
+	if (!($stmt = $mysqli->prepare("INSERT into forslag(namn) values (?)"))) {
+		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	}
+
+	if (!$stmt->bind_param("s", $filtered)) {
+		echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+	}
+
+	if (!$stmt->execute()) {
+	    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+	}
+
+	$filtered = $mysqli->real_escape_string($filtered);	
+}
+
+header('location: index.php');
+?>
         
     </body>
 </html>
